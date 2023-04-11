@@ -1,0 +1,14 @@
+{% extends 'shop/basic.html' %} {% block title %}Трекер - ТехЗеро {% endblock %} {% block body %}
+{{response}}
+<h1>Payment status regarding your ID {{response.ORDERID}}</h2>
+{% if response.RESPCODE == '01' %}
+Заказ успешно оформлен
+{% else %}
+Заказ не оформлен
+{% endif %}
+{% endblock %}
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

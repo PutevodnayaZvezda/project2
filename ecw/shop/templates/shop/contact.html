@@ -1,0 +1,32 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %}Contact Us {% endblock %}
+  {% block body %}
+<div class="container my-3">
+  <h1>Контакты нашей команды</h1>
+<form action="/shop/contact/" method="post">{% csrf_token %}
+  <div class="form-group">
+    <label for="exampleInputEmail1">Ваша почта</label>
+    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Your Email ID">
+    <small id="emailHelp" class="form-text text-muted">Мы не передадим вашу почту назойливым рекламщикам.</small>
+  </div>
+  <div class="form-group">
+    <label>Сообщение</label>
+    <textarea class="form-control" name="msg" id="exampleFormControlTextarea1" placeholder="Введите ваше сообщение сюда"></textarea>
+  </div>
+  <div class="form-group form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+    <label class="form-check-label" for="exampleCheck1">Подпишитесь на рассылку новостей</label>
+  </div>
+  <button type="submit" class="btn btn-primary">Подтвердить</button>
+</form>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+{% if submit %}
+alert('Благодарим Вас за то, что обратились к нам. Мы скоро свяжемся с вами');
+document.location="/shop";
+{% endif %}
+</script>
+{% endblock %}

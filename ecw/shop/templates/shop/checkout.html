@@ -1,0 +1,104 @@
+{% extends 'shop/basic.html' %} {% block title %}Checkout {% endblock %} {% block body %}
+<div class="container">
+  <div class="col my-4">
+    <h2>Шаг-1 Проверка ТехЗеро - Просмотрите товары в своей корзине</h2>
+    <div class="my-4">
+      <ul class="list-group" id="items">
+
+      </ul>
+      <nav aria-label="breadcrumb">
+  <ol class="breadcrumb mt-3">
+    <li class="breadcrumb-item active" aria-current="page">Общая сумма вашей корзины составляет <b> руб. <span id="totalPrice"></span></b>
+    <i>Введите свои данные ниже и оформите заказ.</i> Спасибо, что воспользовались услугами ТехЗеро.
+    </li>
+  </ol>
+</nav>
+    </div>
+  </div>
+  <div class="col my-4">
+    <h2>Шаг-2 Введите адрес и другие данные</h2>
+    <form method="post" action="/shop/checkout/">
+      {% csrf_token %}
+      <input type="hidden" name = "itemsjson" id="itemsjson">
+      <input type="hidden" name = "amount" id="amount">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="inputname">Имя</label>
+          <input type="text" placeholder="Name" class="form-control" id="name" name="name" />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="inputEmail4">Почта</label>
+          <input type="email" placeholder="Email ID" class="form-control" name="email" id="email" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputAddress">Адрес</label>
+        <input type="text" class="form-control" name="address1" id="address1" placeholder="1234 Main St" />
+      </div>
+      <div class="form-group">
+        <label for="inputAddress2">Адрес (2)</label>
+        <input type="text" class="form-control" name="address2" id="address2" placeholder="Apartment, studio, or floor" />
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="inputCity">Город</label>
+          <input type="text" placeholder="Enter City" class="form-control" name="city" id="city" />
+        </div>
+        <div class="form-group col-md-4">
+          <label for="inputState">Страна</label>
+          <input type="text" class="form-control" id="state" name="state" placeholder="Enter State" />
+        </div>
+        <div class="form-group col-md-2">
+          <label for="inputZip">Код</label>
+          <input type="text" placeholder="Pincode" class="form-control" name="zip" id="zip" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputZip">Номер телефона</label>
+        <input type="tel" placeholder="Number" class="form-control" name="phone" id="phone" />
+      </div>
+      <button type="submit" class="btn btn-primary">Оформить заказ</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+if (localStorage.getItem('cart') == null) {
+    var cart = {};
+} else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+}
+var sum=0;
+var totalPrice=0;
+if ($.isEmptyObject(cart)){
+  mystr = `<p>Ваша козина пуста</p>`
+          $('#items').append(mystr);
+
+}
+else{
+  for (item in cart){
+    let name = cart[item][1];
+    let qty = cart[item][0];
+    let itemprice = cart[item][2];
+    sum = sum  + qty;
+    totalPrice = totalPrice+qty*itemprice;
+    mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+            ${name}
+              <span class="badge badge-primary badge-pill">${qty}</span>
+            </li>`
+          $('#items').append(mystr);
+      }
+
+}
+document.getElementById('cart').innerHTML = sum;
+document.getElementById('totalPrice').innerHTML = totalPrice;
+$('#itemsjson').val(JSON.stringify(cart));
+{% if thank %}
+alert('Спасибо, что сделали заказ у нас. Идентификатор вашего заказа - {{id}}. Используйте его для отслеживания вашего заказа')
+localStorage.clear();
+document.location="/shop";
+{% endif %}
+$('#amount').val($('#totalPrice').html())
+</script>
+{% endblock %}
